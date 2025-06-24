@@ -1,0 +1,31 @@
+{
+  "dotenv.enableAutocloaking": false,
+  "editor.autoIndent": "full",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.detectIndentation": false,
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.indentSize": "tabSize",
+  "editor.tabSize": 2,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "eslint.useFlatConfig": true,
+  "redhat.telemetry.enabled": false,
+  "dotenv.enableSecretpeeking": false,
+  "cssVariables.lookupFiles": [
+    "**/*.css",
+    "**/*.scss",
+    "**/*.sass",
+    "**/*.less",
+    "node_modules/@mantine/core/styles.css",
+    "node_modules/@mantine/core/styles.css",
+    "node_modules/@mantine/nprogress/styles.css",
+    "node_modules/@mantine/notifications/styles.css",
+    "node_modules/@mantine/dates/styles.css",
+    "node_modules/@mantine/dropzone/styles.css"
+  ]
+}
