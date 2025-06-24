@@ -1,6 +1,8 @@
 {
   "include": [
     "**/*",
+    "eslint.config.mjs",
+    "postcss.config.cjs",
     "**/.server/**/*",
     "**/.client/**/*",
     ".react-router/types/**/*"
@@ -17,6 +19,8 @@
     "paths": {
       "@/*": ["./src/*"]
     },
+    "allowJs": true,
+    "checkJs": true,
     "esModuleInterop": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,

@@ -1,188 +1,124 @@
-import eslint from "@eslint/js";
-import eslintPluginUnicorn from "eslint-plugin-unicorn";
-import globals from "globals";
-import importPlugin from "eslint-plugin-import";
-import jsxA11y from "eslint-plugin-jsx-a11y";
-import reactHooks from "eslint-plugin-react-hooks";
-import reactPlugin from "eslint-plugin-react";
-import tseslint from "typescript-eslint";
+import eslint from '@eslint/js'
+import importPlugin from 'eslint-plugin-import'
+import jsxA11y from 'eslint-plugin-jsx-a11y'
+import reactPlugin from 'eslint-plugin-react'
+import reactHooks from 'eslint-plugin-react-hooks'
+import eslintPluginUnicorn from 'eslint-plugin-unicorn'
+import globals from 'globals'
+import tseslint from 'typescript-eslint'
 
-export const config = [
+export default [
   eslint.configs.recommended,
-  ...tseslint.configs.recommended,
-  ...tseslint.configs.strict,
+  ...tseslint.configs.recommendedTypeChecked,
+  ...tseslint.configs.strictTypeChecked,
   importPlugin.flatConfigs.recommended,
+  importPlugin.flatConfigs.typescript,
   eslintPluginUnicorn.configs.recommended,
   reactPlugin.configs.flat.recommended,
-  reactPlugin.configs.flat["jsx-runtime"],
-  reactHooks.configs["recommended-latest"],
+  reactPlugin.configs.flat['jsx-runtime'],
+  reactHooks.configs['recommended-latest'],
   jsxA11y.flatConfigs.recommended,
   {
+    ignores: [
+      'node_modules/**',
+      '.pnp/**',
+      '.pnp.js',
+      '.yarn/**',
+      'storybook-static/**',
+      'coverage/**',
+      'build/**',
+      '*.tsbuildinfo',
+    ],
     languageOptions: {
-      ecmaVersion: "latest",
+      ecmaVersion: 'latest',
       globals: {
         ...globals.browser,
         ...globals.node,
       },
-      sourceType: "module",
+      sourceType: 'module',
       ...reactPlugin.configs.flat.recommended.languageOptions,
       ...jsxA11y.flatConfigs.recommended.languageOptions,
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
     rules: {
-      "@typescript-eslint/explicit-member-accessibility": "warn",
-      "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/no-floating-promises": "error",
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        { argsIgnorePattern: "^_" },
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_' },
       ],
       camelcase: [
-        "error",
+        'error',
         {
           ignoreGlobals: true,
           ignoreImports: true,
         },
       ],
-      curly: ["error", "all"],
-      "default-case": "error",
-      "default-case-last": "error",
-      "default-param-last": "error",
-      "dot-notation": "error",
-      eqeqeq: "error",
-      "import/extensions": "off",
-      "import/first": "error",
-      "import/named": "error",
-      "import/order": [
-        "error",
+      curly: ['error', 'all'],
+      'import/extensions': 'off',
+      'import/first': 'error',
+      'import/named': 'error',
+      'import/order': [
+        'error',
         {
-          alphabetize: { caseInsensitive: true, order: "asc" },
+          alphabetize: { caseInsensitive: true, order: 'asc' },
           distinctGroup: true,
           groups: [
-            "builtin",
-            "external",
-            "internal",
-            "parent",
-            "sibling",
-            "index",
-            "object",
-            "type",
+            'builtin',
+            'external',
+            'internal',
+            'parent',
+            'sibling',
+            'index',
+            'object',
+            'type',
           ],
-          "newlines-between": "always",
+          'newlines-between': 'always',
           pathGroups: [
-            { group: "index", pattern: "*.module.scss", position: "after" },
-            { group: "internal", pattern: "@/**", position: "after" },
+            { group: 'index', pattern: '*.module.scss', position: 'after' },
+            { group: 'internal', pattern: '@/**', position: 'after' },
           ],
           pathGroupsExcludedImportTypes: [
-            "builtin",
-            "external",
-            "parent",
-            "sibling",
-            "object",
-            "type",
+            'builtin',
+            'external',
+            'parent',
+            'sibling',
+            'object',
+            'type',
           ],
         },
       ],
-      "max-classes-per-file": ["error", 1],
-      "max-lines": [
-        "warn",
+      'max-classes-per-file': ['error', 1],
+      'max-lines': [
+        'warn',
         {
           max: 300,
           skipBlankLines: true,
           skipComments: true,
         },
       ],
-      "max-params": [
-        "warn",
+      'no-alert': 'error',
+      'no-console': 'error',
+      'react/jsx-filename-extension': [
+        'error',
         {
-          max: 4,
+          extensions: ['.js', '.jsx', '.ts', '.tsx'],
         },
       ],
-      "no-alert": "error",
-      "no-array-constructor": "error",
-      "no-console": "error",
-      "no-constructor-return": "error",
-      "no-duplicate-imports": "error",
-      "no-eval": "error",
-      "no-implicit-coercion": "error",
-      "no-implicit-globals": "error",
-      "no-implied-eval": "error",
-      "no-inner-declarations": "warn",
-      "no-invalid-this": "error",
-      "no-labels": "error",
-      "no-multi-assign": "error",
-      "no-multi-str": "error",
-      "no-nested-ternary": "error",
-      "no-new-wrappers": "error",
-      "no-param-reassign": [
-        "error",
+      'sort-imports': 'off',
+      'unicorn/filename-case': [
+        'error',
         {
-          props: false,
+          cases: {
+            camelCase: true,
+            pascalCase: true,
+          },
         },
       ],
-      "no-plusplus": "error",
-      "no-shadow": "error",
-      "no-var": "error",
-      "prefer-const": "warn",
-      "prefer-promise-reject-errors": "error",
-      "prefer-rest-params": "warn",
-      "prefer-template": "error",
-      radix: "error",
-      "require-await": "error",
-      "require-yield": "error",
-      "sort-imports": "off",
-      "sort-keys": [
-        "error",
-        "asc",
-        {
-          caseSensitive: true,
-          ignoreComputedKeys: true,
-          minKeys: 2,
-          natural: true,
-        },
-      ],
-      "react/jsx-curly-brace-presence": [
-        "error",
-        {
-          children: "never",
-          propElementValues: "always",
-          props: "never",
-        },
-      ],
-      "react/jsx-filename-extension": [
-        "error",
-        {
-          extensions: [".js", ".jsx", ".ts", ".tsx"],
-        },
-      ],
-      "react/jsx-fragments": ["error", "element"],
-      "react/jsx-handler-names": "error",
-      "react/jsx-no-leaked-render": ["error", { validStrategies: ["ternary"] }],
-      "react/jsx-no-useless-fragment": "error",
-      "react/jsx-sort-props": [
-        "error",
-        {
-          callbacksLast: true,
-          ignoreCase: false,
-          multiline: "last",
-          noSortAlphabetically: false,
-          reservedFirst: true,
-          shorthandFirst: true,
-        },
-      ],
-      "react/jsx-uses-react": "error",
-      "react/jsx-uses-vars": "error",
-      "react/prefer-read-only-props": "error",
-      "react/react-in-jsx-scope": "warn",
-      "react/require-default-props": "off",
-      "react/self-closing-comp": [
-        "error",
-        {
-          component: true,
-        },
-      ],
-      "unicorn/no-null": "warn",
-      "unicorn/prevent-abbreviations": [
-        "error",
+      'unicorn/prevent-abbreviations': [
+        'error',
         {
           replacements: {
             prop: false,
@@ -193,33 +129,12 @@ export const config = [
         },
       ],
     },
-    ignores: [
-      "node_modules/**",
-      ".pnp/**",
-      ".pnp.js",
-      ".yarn/**",
-      "storybook-static/**",
-      "coverage/**",
-      "build/**",
-      "dist/**",
-      "out/**",
-      ".docusaurus/**",
-      ".cache-loader/**",
-      ".cache/**",
-      ".next/**",
-      ".Trashes/**",
-      "__MACOSX/**",
-      ".Spotlight-V100/**",
-      ".vercel/**",
-      "*.tsbuildinfo",
-      "next-env.d.ts",
-    ],
     settings: {
-      "import/resolver": {
+      'import/resolver': {
         node: true,
         typescript: true,
       },
-      react: { version: "detect" },
+      react: { version: 'detect' },
     },
   },
-];
+]
