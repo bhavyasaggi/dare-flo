@@ -5,6 +5,7 @@
     "postcss.config.cjs",
     "**/.server/**/*",
     "**/.client/**/*",
+    ".storybook/**/*",
     ".react-router/types/**/*"
   ],
   "compilerOptions": {
