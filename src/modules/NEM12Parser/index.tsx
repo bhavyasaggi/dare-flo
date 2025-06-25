@@ -3,28 +3,32 @@ import { useEffect, useRef, useState } from 'react'
 
 import type { NEM12Parser } from './types'
 
-const Nem12Worker = new Worker(new URL('worker', import.meta.url), {
-  type: 'module',
-})
-const Nem12WorkerApi = Comlink.wrap<NEM12Parser>(Nem12Worker)
-
 export function useNem12Parser(file?: File) {
+  const workerRef = useRef<Worker | undefined>(undefined)
   const fileRef = useRef<File | undefined>(undefined)
+
   const [isProcessing, setProcessing] = useState(Boolean(file))
   const [isError, setError] = useState(false)
-  const [data, setData] = useState<string | undefined>()
+  const [dataFile, setDataFile] = useState<Blob | undefined>()
 
   useEffect(() => {
     let isStale = false
     fileRef.current = file
     if (fileRef.current) {
       setProcessing(true)
-      Nem12Worker.terminate()
-      Nem12WorkerApi.processCSV(fileRef.current)
-        .then((data) => {
+      // Better to Nuke when in doubt.
+      if (workerRef.current) {
+        workerRef.current.terminate()
+      }
+      workerRef.current = new Worker(new URL('worker', import.meta.url), {
+        type: 'module',
+      })
+      // Using comlink to avoid post-messaging
+      Comlink.wrap<NEM12Parser>(workerRef.current)
+        .processCSV(fileRef.current)
+        .then((resultFile) => {
           if (!isStale) {
-            // parse file data
-            setData(data.join('\n'))
+            setDataFile(resultFile)
           }
         })
         .catch(() => {
@@ -38,15 +42,21 @@ export function useNem12Parser(file?: File) {
             setProcessing(false)
           }
         })
+    } else {
+      if (workerRef.current) {
+        workerRef.current.terminate()
+      }
+      setProcessing(false)
+      setError(false)
+      setDataFile(undefined)
     }
     return () => {
       isStale = true
     }
   }, [file])
 
-  // TODO: return objectUrl generated via WebWorker, and preview-data
   return [
-    data,
+    dataFile,
     {
       isProcessing: isProcessing || fileRef.current !== file,
       isError,

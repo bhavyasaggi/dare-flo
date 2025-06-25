@@ -1,26 +1,31 @@
-import { Code, LoadingOverlay, Paper, Stack } from '@mantine/core'
-import { useState } from 'react'
+import { Box, Button, LoadingOverlay, Paper, Stack, Text } from '@mantine/core'
+import React, { useEffect, useState } from 'react'
 
-import CodeHighlight from '@/components/CodeHighlight'
 import InputDropzone from '@/components/InputDropzone'
 import { useNem12Parser } from '@/modules/NEM12Parser'
 
+import Link from '../Link'
+
 export default function SectionParseMeterFile() {
   const [meterFile, setMeterFile] = useState<File | undefined>()
+  const [dataFile, { isProcessing, isError }] = useNem12Parser(meterFile)
 
-  const [data, { isProcessing, isError }] = useNem12Parser(meterFile)
+  const [dataFileUrl, setDataFileUrl] = useState<string | undefined>()
+  useEffect(() => {
+    // This is in effect because URL.createObjectUrl is a Browser-API.
+    setDataFileUrl(dataFile ? URL.createObjectURL(dataFile) : undefined)
+  }, [dataFile])
+  useEffect(() => {
+    // Clear URL.revokeObjectUrl to prevent memory-leakage.
+    return () => {
+      if (dataFileUrl) {
+        URL.revokeObjectURL(dataFileUrl)
+      }
+    }
+  }, [dataFileUrl])
 
-  return (
-    <Stack>
-      <InputDropzone
-        loading={isProcessing}
-        disabled={isProcessing}
-        maxFiles={1}
-        multiple={false}
-        onDrop={(files) => {
-          setMeterFile(files[0])
-        }}
-      />
+  if (isError || dataFileUrl) {
+    return (
       <Paper
         pos='relative'
         withBorder
@@ -28,16 +33,51 @@ export default function SectionParseMeterFile() {
         style={{ overflow: 'hidden' }}
       >
         <LoadingOverlay visible={isProcessing} />
-        {isError ? 'Something went wrong. Try again?' : undefined}
-        {!isError && !meterFile ? (
-          <Code block mih={64}>
-            The SQL statements from CSV (NEM12 format) shall show up here.
-          </Code>
-        ) : undefined}
-        {!isError && meterFile ? (
-          <CodeHighlight code={data || '-'} language='sql' />
-        ) : undefined}
+        <Stack py='md' px='lg' align='center' justify='center' gap='xs'>
+          {isError ? (
+            <React.Fragment>
+              <Text>Something went wrong.</Text>
+              <Button
+                onClick={() => {
+                  setMeterFile(undefined)
+                }}
+              >
+                Try Again?
+              </Button>
+            </React.Fragment>
+          ) : undefined}
+          {!isError && dataFileUrl ? (
+            <React.Fragment>
+              <Box>
+                You may download your SQL Dump{' '}
+                <Link href={dataFileUrl || '#'} download='download.sql'>
+                  here
+                </Link>
+              </Box>
+              <Text>or</Text>
+              <Button
+                onClick={() => {
+                  setMeterFile(undefined)
+                }}
+              >
+                Try Again?
+              </Button>
+            </React.Fragment>
+          ) : undefined}
+        </Stack>
       </Paper>
-    </Stack>
+    )
+  }
+
+  return (
+    <InputDropzone
+      loading={isProcessing}
+      disabled={isProcessing}
+      maxFiles={1}
+      multiple={false}
+      onDrop={(files) => {
+        setMeterFile(files[0])
+      }}
+    />
   )
 }

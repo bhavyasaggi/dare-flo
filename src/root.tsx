@@ -1,8 +1,6 @@
 import '@mantine/core/styles.css'
 import '@mantine/nprogress/styles.css'
-import '@mantine/dates/styles.css'
 import '@mantine/dropzone/styles.css'
-import '@mantine/notifications/styles.css'
 
 import './styles/styles.css'
 
@@ -23,7 +21,6 @@ import {
   Text,
   mantineHtmlProps,
 } from '@mantine/core'
-import { Notifications } from '@mantine/notifications'
 import { NavigationProgress, nprogress } from '@mantine/nprogress'
 import React, { useEffect } from 'react'
 import {
@@ -76,7 +73,6 @@ export function Layout({ children }: { readonly children: React.ReactNode }) {
       <body>
         <MantineProvider>
           <NavigationProgress />
-          <Notifications />
           <AppShell header={{ height: 72 }}>
             <AppShell.Header style={{ overflow: 'hidden' }}>
               <Group py='sm' component={Container} wrap='nowrap'>
